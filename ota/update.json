@@ -1,8 +1,8 @@
 {
   "versionCode": 2,
-  "versionName": "1.1.0",
-  "apkUrl": "https://github.com/youruser/taskit/releases/download/v1.1.0/TasKit.apk",
-  "changelog": "• Added futuristic OTA updates\n• Added notification management\n• Improved app startup speed\n• Fixed minor UI glitches in Settings",
+  "versionName": "1.5.2-beta",
+  "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/latest/download/app-release.apk",
+  "changelog": "• Futuristic OTA update system enabled\n• Branded notification icons\n• Improved background sync\n• Performance optimizations",
   "forceUpdateAfterDays": 7,
   "releaseDate": "2026-05-16",
   "mandatory": true
