@@ -61,9 +61,8 @@ class UpdatePreferenceManager @Inject constructor(
                 preferences[CHANGELOG] = changelog
                 preferences[MANDATORY] = mandatory
                 preferences[APK_URL] = apkUrl
-                if (preferences[FIRST_DETECTED_TIME] == null) {
-                    preferences[FIRST_DETECTED_TIME] = System.currentTimeMillis()
-                }
+                // Reset/Set the first detected time for the new version
+                preferences[FIRST_DETECTED_TIME] = System.currentTimeMillis()
             }
             preferences[LAST_CHECKED_TIME] = System.currentTimeMillis()
         }

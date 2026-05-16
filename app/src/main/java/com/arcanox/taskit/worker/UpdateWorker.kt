@@ -10,6 +10,7 @@ import com.arcanox.taskit.data.repository.UpdateRepository
 import com.arcanox.taskit.util.UpdateNotificationHelper
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.flow.first
 
 @HiltWorker
 class UpdateWorker @AssistedInject constructor(
@@ -34,7 +35,15 @@ class UpdateWorker @AssistedInject constructor(
             }
             
             if (update.versionCode > currentVersionCode) {
-                notificationHelper.showUpdateAvailable(update.versionName, update.mandatory)
+                var daysLeft: Int? = null
+                if (update.mandatory) {
+                    val prefsData = repository.getLocalUpdateData().first()
+                    if (prefsData.firstDetectedTime > 0) {
+                        val elapsed = System.currentTimeMillis() - prefsData.firstDetectedTime
+                        daysLeft = (7 - (elapsed / (1000 * 60 * 60 * 24))).toInt().coerceAtLeast(0)
+                    }
+                }
+                notificationHelper.showUpdateAvailable(update.versionName, update.mandatory, daysLeft)
             }
         }
         return Result.success()
