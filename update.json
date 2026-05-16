@@ -1,0 +1,9 @@
+{
+  "versionCode": 2,
+  "versionName": "1.1.0",
+  "apkUrl": "",
+  "changelog": "• Added futuristic OTA updates\n• Added notification management\n• Improved app startup speed\n• Fixed minor UI glitches in Settings",
+  "forceUpdateAfterDays": 7,
+  "releaseDate": "2026-05-16",
+  "mandatory": true
+}
