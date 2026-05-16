@@ -25,7 +25,7 @@ class NotificationHelper(private val context: Context) {
 
     fun showNotification(title: String, message: String) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm) // Using system icon for now
+            .setSmallIcon(R.drawable.ic_stat_taskit)
             .setContentTitle(title)
             .setContentText(message)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

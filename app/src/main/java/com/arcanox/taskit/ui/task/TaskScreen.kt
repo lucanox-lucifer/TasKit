@@ -28,17 +28,22 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.arcanox.taskit.data.local.entity.CategoryEntity
 import com.arcanox.taskit.data.local.entity.Priority
 import com.arcanox.taskit.data.local.entity.TaskEntity
 import com.arcanox.taskit.ui.theme.*
+import com.arcanox.taskit.ui.update.UpdateViewModel
+import java.text.SimpleDateFormat
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskScreen(
     viewModel: TaskViewModel,
+    updateViewModel: UpdateViewModel,
     isDarkMode: Boolean,
     onDarkModeChange: (Boolean) -> Unit,
     onAddTask: () -> Unit,
@@ -50,6 +55,28 @@ fun TaskScreen(
     val stats by viewModel.stats.collectAsState()
     val searchQuery by viewModel.searchQuery.collectAsState()
     val categories by viewModel.categories.collectAsState()
+    val updateState by updateViewModel.uiState.collectAsState()
+
+    if (updateState.showWhatsNew) {
+        AlertDialog(
+            onDismissRequest = { updateViewModel.dismissWhatsNew() },
+            title = { Text("What's New! ✨") },
+            text = {
+                Column {
+                    Text(
+                        "You've updated to v${updateState.currentVersionName}",
+                        fontWeight = FontWeight.Bold,
+                        color = StitchPrimary
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    Text(updateState.changelog.ifEmpty { "We've improved TasKit for a better experience." })
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { updateViewModel.dismissWhatsNew() }) { Text("Awesome") }
+            }
+        )
+    }
 
     var showHelpDialog by remember { mutableStateOf(false) }
 
@@ -111,13 +138,27 @@ fun TaskScreen(
                     tonalElevation = 0.dp
                 ) {
                     tabs.forEachIndexed { index, tab ->
+                        val hasUpdate = !updateState.isUpToDate && tab.title == "Settings"
+                        
                         NavigationBarItem(
                             icon = { 
-                                Icon(
-                                    tab.icon, 
-                                    contentDescription = tab.title,
-                                    tint = if (currentTab == index) StitchPrimary else StitchOnSurfaceVariant
-                                ) 
+                                Box {
+                                    Icon(
+                                        tab.icon, 
+                                        contentDescription = tab.title,
+                                        tint = if (currentTab == index) StitchPrimary else StitchOnSurfaceVariant
+                                    ) 
+                                    if (hasUpdate) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(8.dp)
+                                                .clip(CircleShape)
+                                                .background(StitchError)
+                                                .align(Alignment.TopEnd)
+                                                .offset(x = 4.dp, y = (-4).dp)
+                                        )
+                                    }
+                                }
                             },
                             label = { 
                                 Text(
@@ -193,7 +234,8 @@ fun TaskScreen(
                         onSwipeToDeleteChange = { swipeToDeleteEnabled = it },
                         categories = categories,
                         onAddCategory = { name, color -> viewModel.addCategory(name, color) },
-                        onDeleteCategory = { viewModel.deleteCategory(it) }
+                        onDeleteCategory = { viewModel.deleteCategory(it) },
+                        updateViewModel = updateViewModel
                     )
                 }
             }
@@ -541,11 +583,31 @@ fun SettingsScreen(
     onSwipeToDeleteChange: (Boolean) -> Unit,
     categories: List<CategoryEntity>,
     onAddCategory: (String, Int?) -> Unit,
-    onDeleteCategory: (CategoryEntity) -> Unit
+    onDeleteCategory: (CategoryEntity) -> Unit,
+    updateViewModel: UpdateViewModel
 ) {
+    val updateState by updateViewModel.uiState.collectAsState()
     var showAddCategoryDialog by remember { mutableStateOf(false) }
+    var showChangelogDialog by remember { mutableStateOf(false) }
+
+    if (showChangelogDialog) {
+        AlertDialog(
+            onDismissRequest = { showChangelogDialog = false },
+            title = { Text("What's New in v${updateState.latestVersionName}") },
+            text = {
+                Text(
+                    text = updateState.changelog.ifEmpty { "No changelog available." },
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(onClick = { showChangelogDialog = false }) { Text("Close") }
+            }
+        )
+    }
 
     if (showAddCategoryDialog) {
+        // ... (previous dialog code)
         var newCatName by remember { mutableStateOf("") }
         var selectedColor by remember { mutableStateOf(StitchPrimary.toArgb()) }
         
@@ -617,13 +679,150 @@ fun SettingsScreen(
         item {
             SettingsItem("Dark Mode", isDarkMode, onDarkModeChange)
         }
-        item {
-            SettingsItem("Notifications", notificationsEnabled, onNotificationsChange)
-        }
-        item {
-            SettingsItem("Swipe to Delete", swipeToDeleteEnabled, onSwipeToDeleteChange)
-        }
         
+        // OTA Update Section
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("OTA UPDATES", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = StitchPrimary)
+        }
+        item {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.05f),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            ) {
+                Column(modifier = Modifier.padding(20.dp)) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text("Current: v${updateState.currentVersionName}", style = MaterialTheme.typography.bodyMedium)
+                            if (!updateState.isUpToDate) {
+                                Text(
+                                    "Latest: v${updateState.latestVersionName}",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = StitchSecondary,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                        }
+                        
+                        val statusText = when {
+                            updateState.isUpToDate -> "Up to Date"
+                            updateState.isMandatory -> "Mandatory Update"
+                            else -> "Update Available"
+                        }
+                        val statusColor = when {
+                            updateState.isUpToDate -> Color(0xFF43C478)
+                            updateState.isMandatory -> StitchError
+                            else -> StitchTertiary
+                        }
+                        
+                        Surface(
+                            color = statusColor.copy(alpha = 0.1f),
+                            shape = CircleShape,
+                            border = BorderStroke(1.dp, statusColor.copy(alpha = 0.2f))
+                        ) {
+                            Text(
+                                statusText,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = statusColor,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+
+                    if (!updateState.isUpToDate && updateState.firstDetectedTime > 0) {
+                        val daysRemaining = 7 - ((System.currentTimeMillis() - updateState.firstDetectedTime) / (1000 * 60 * 60 * 24))
+                        if (daysRemaining in 1..7) {
+                            Text(
+                                "Update required in $daysRemaining days",
+                                style = MaterialTheme.typography.labelSmall,
+                                color = if (daysRemaining <= 2) StitchError else StitchOnSurfaceVariant,
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
+                        }
+                    }
+
+                    if (updateState.lastCheckedTime > 0) {
+                        val sdf = SimpleDateFormat("MMM dd, HH:mm", Locale.getDefault())
+                        Text(
+                            "Last checked: ${sdf.format(Date(updateState.lastCheckedTime))}",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.padding(top = 8.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    if (updateState.isDownloading) {
+                        LinearProgressIndicator(
+                            modifier = Modifier.fillMaxWidth().clip(CircleShape),
+                            color = StitchPrimary,
+                            trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                        )
+                    } else {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Button(
+                                onClick = { updateViewModel.checkUpdate() },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary.copy(alpha = 0.1f), contentColor = StitchPrimary)
+                            ) {
+                                Text("Check")
+                            }
+                            if (!updateState.isUpToDate) {
+                                Button(
+                                    onClick = { updateViewModel.startDownload() },
+                                    modifier = Modifier.weight(1f),
+                                    shape = RoundedCornerShape(12.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary)
+                                ) {
+                                    Text("Download")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(8.dp))
+            Text("NOTIFICATIONS", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = StitchPrimary)
+        }
+        item {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.05f),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    SettingsToggle("Enable Notifications", notificationsEnabled, onNotificationsChange)
+                    SettingsToggle("OTA Update Notifications", true) { /* TODO */ }
+                    SettingsToggle("Daily Reminder Notifications", true) { /* TODO */ }
+                    SettingsToggle("Mandatory Update Alerts", true) { /* TODO */ }
+                    
+                    Button(
+                        onClick = { updateViewModel.sendTestNotification() },
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary.copy(alpha = 0.1f), contentColor = StitchPrimary)
+                    ) {
+                        Text("TEST NOTIFICATION")
+                    }
+                }
+            }
+        }
+
         item {
             Spacer(modifier = Modifier.height(8.dp))
             Text("CATEGORIES", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = StitchPrimary)
@@ -676,8 +875,24 @@ fun SettingsScreen(
                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
-                    Text("Coming Soon!", fontWeight = FontWeight.Bold)
-                    Text("We're working on new features like cloud sync and collaboration.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    if (!updateState.isUpToDate) {
+                        Text("Version ${updateState.latestVersionName}", fontWeight = FontWeight.Bold, color = StitchPrimary)
+                        Text(
+                            updateState.changelog.ifEmpty { "No changelog available." },
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        Text("You're on the latest version!", fontWeight = FontWeight.Bold)
+                        Text("Stay tuned for new futuristic updates.", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    
+                    TextButton(
+                        onClick = { showChangelogDialog = true },
+                        modifier = Modifier.padding(top = 8.dp)
+                    ) {
+                        Text("VIEW HISTORY", style = MaterialTheme.typography.labelSmall, color = StitchSecondary)
+                    }
                 }
             }
         }
@@ -716,16 +931,60 @@ fun SettingsScreen(
                         Spacer(Modifier.width(16.dp))
                         Text("TasKit", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
                     }
-                    Spacer(Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
                     AboutRow("Publisher", "Arcanox")
                     AboutRow("Managed by", "Arcanox")
                     AboutRow("Powered by", "Lucanox")
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("OTA Service", color = MaterialTheme.colorScheme.onSurfaceVariant, style = MaterialTheme.typography.bodyMedium)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            val statusColor = if (updateState.isServiceOnline) Color(0xFF43C478) else StitchError
+                            val statusText = if (updateState.isServiceOnline) "Online" else "Offline"
+                            
+                            Box(
+                                modifier = Modifier
+                                    .size(8.dp)
+                                    .clip(CircleShape)
+                                    .background(statusColor)
+                            )
+                            Spacer(Modifier.width(6.dp))
+                            Text(
+                                statusText,
+                                color = statusColor,
+                                fontWeight = FontWeight.Bold,
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        }
+                    }
                     HorizontalDivider(color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f), modifier = Modifier.padding(vertical = 12.dp))
-                    AboutRow("Version", "1.0.0 (Build 2026)")
+                    AboutRow("Version", "${updateState.currentVersionName} (Build ${updateState.currentVersionCode})")
                 }
             }
         }
         item { Spacer(modifier = Modifier.height(100.dp)) }
+    }
+}
+
+@Composable
+fun SettingsToggle(title: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    Row(
+        modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(title, style = MaterialTheme.typography.bodyLarge)
+        Switch(
+            checked = checked, 
+            onCheckedChange = onCheckedChange,
+            colors = SwitchDefaults.colors(
+                checkedThumbColor = StitchPrimary,
+                checkedTrackColor = StitchPrimary.copy(alpha = 0.5f)
+            )
+        )
     }
 }
 

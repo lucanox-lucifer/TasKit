@@ -1,0 +1,121 @@
+package com.arcanox.taskit.ui.update
+
+import android.app.Application
+import android.os.Build
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.arcanox.taskit.data.local.UpdatePreferenceManager
+import com.arcanox.taskit.data.repository.UpdateRepository
+import com.arcanox.taskit.util.DownloadHelper
+import com.arcanox.taskit.util.UpdateNotificationHelper
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+data class UpdateUIState(
+    val currentVersionName: String = "",
+    val currentVersionCode: Int = 0,
+    val isUpToDate: Boolean = true,
+    val latestVersionName: String = "",
+    val latestVersionCode: Int = -1,
+    val changelog: String = "",
+    val isMandatory: Boolean = false,
+    val apkUrl: String = "",
+    val lastCheckedTime: Long = 0,
+    val isDownloading: Boolean = false,
+    val downloadProgress: Int = 0,
+    val error: String? = null,
+    val firstDetectedTime: Long = 0,
+    val showWhatsNew: Boolean = false,
+    val isServiceOnline: Boolean = false
+)
+
+@HiltViewModel
+class UpdateViewModel @Inject constructor(
+    private val repository: UpdateRepository,
+    private val downloadHelper: DownloadHelper,
+    private val prefs: UpdatePreferenceManager,
+    private val notificationHelper: UpdateNotificationHelper,
+    private val application: Application
+) : ViewModel() {
+
+    private val _uiState = MutableStateFlow(UpdateUIState())
+    val uiState: StateFlow<UpdateUIState> = _uiState.asStateFlow()
+
+    private val packageInfo = application.packageManager.getPackageInfo(application.packageName, 0)
+    private val currentVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+        packageInfo.longVersionCode.toInt()
+    } else {
+        @Suppress("DEPRECATION")
+        packageInfo.versionCode
+    }
+    private val currentVersionName = packageInfo.versionName
+
+    init {
+        _uiState.update { it.copy(
+            currentVersionName = currentVersionName ?: "Unknown",
+            currentVersionCode = currentVersionCode
+        ) }
+        
+        viewModelScope.launch {
+            repository.getLocalUpdateData().collect { prefsData ->
+                _uiState.update { state ->
+                    val showWhatsNew = prefsData.lastSeenVersion != -1 && 
+                                      currentVersionCode > prefsData.lastSeenVersion
+                    
+                    if (showWhatsNew) {
+                        dismissWhatsNew() // Update last seen version
+                    }
+
+                    state.copy(
+                        latestVersionName = prefsData.latestVersionName,
+                        latestVersionCode = prefsData.latestVersionCode,
+                        changelog = prefsData.changelog,
+                        isMandatory = prefsData.mandatory,
+                        apkUrl = prefsData.apkUrl,
+                        lastCheckedTime = prefsData.lastCheckedTime,
+                        isUpToDate = prefsData.latestVersionCode <= currentVersionCode,
+                        firstDetectedTime = prefsData.firstDetectedTime,
+                        showWhatsNew = showWhatsNew
+                    )
+                }
+            }
+        }
+        
+        // Ensure we have a last seen version if it's the first time
+        viewModelScope.launch {
+            val data = repository.getLocalUpdateData().first()
+            if (data.lastSeenVersion == -1) {
+                prefs.saveLastSeenVersion(currentVersionCode)
+            }
+        }
+    }
+
+    fun dismissWhatsNew() {
+        viewModelScope.launch {
+            prefs.saveLastSeenVersion(currentVersionCode)
+            _uiState.update { it.copy(showWhatsNew = false) }
+        }
+    }
+
+    fun checkUpdate() {
+        viewModelScope.launch {
+            val result = repository.checkUpdate()
+            _uiState.update { it.copy(isServiceOnline = result.isSuccess) }
+        }
+    }
+
+    fun startDownload() {
+        val url = uiState.value.apkUrl
+        val versionName = uiState.value.latestVersionName
+        if (url.isNotEmpty()) {
+            downloadHelper.startDownload(url, "TasKit_$versionName.apk")
+            _uiState.update { it.copy(isDownloading = true) }
+        }
+    }
+
+    fun sendTestNotification() {
+        notificationHelper.showTestNotification()
+    }
+}

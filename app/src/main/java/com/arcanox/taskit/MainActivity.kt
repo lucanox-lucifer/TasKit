@@ -19,6 +19,11 @@ import androidx.navigation.navArgument
 import com.arcanox.taskit.ui.task.TaskEditScreen
 import com.arcanox.taskit.ui.task.TaskScreen
 import com.arcanox.taskit.ui.task.TaskViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.compose.ui.platform.LocalLifecycleOwner
+import com.arcanox.taskit.ui.update.UpdateViewModel
+import com.arcanox.taskit.ui.update.ForceUpdateScreen
 import com.arcanox.taskit.ui.theme.TasKitTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,28 +51,66 @@ class MainActivity : ComponentActivity() {
             TasKitTheme(darkTheme = isDarkMode) {
                 val navController = rememberNavController()
                 val viewModel: TaskViewModel = hiltViewModel()
+                val updateViewModel: UpdateViewModel = hiltViewModel()
+                val updateState by updateViewModel.uiState.collectAsState()
+                val lifecycleOwner = LocalLifecycleOwner.current
 
-                NavHost(navController = navController, startDestination = "tasks") {
-                    composable("tasks") {
-                        TaskScreen(
-                            viewModel = viewModel,
-                            isDarkMode = isDarkMode,
-                            onDarkModeChange = { isDarkMode = it },
-                            onAddTask = { navController.navigate("task_edit/-1") },
-                        ) { taskId ->
-                            navController.navigate("task_edit/$taskId")
+                // Check for updates on startup
+                LaunchedEffect(Unit) {
+                    updateViewModel.checkUpdate()
+                }
+
+                // Check for updates on foreground
+                DisposableEffect(lifecycleOwner) {
+                    val observer = LifecycleEventObserver { _, event ->
+                        if (event == Lifecycle.Event.ON_RESUME) {
+                            updateViewModel.checkUpdate()
                         }
                     }
-                    composable(
-                        "task_edit/{taskId}",
-                        arguments = listOf(navArgument("taskId") { type = NavType.IntType })
-                    ) { backStackEntry ->
-                        val taskId = backStackEntry.arguments?.getInt("taskId") ?: -1
-                        TaskEditScreen(
-                            taskId = taskId,
-                            viewModel = viewModel
-                        ) {
-                            navController.popBackStack()
+                    lifecycleOwner.lifecycle.addObserver(observer)
+                    onDispose {
+                        lifecycleOwner.lifecycle.removeObserver(observer)
+                    }
+                }
+
+                // Force Update Logic
+                val isForceLocked = remember(updateState) {
+                    if (!updateState.isUpToDate && updateState.isMandatory && updateState.firstDetectedTime > 0) {
+                        val daysRemaining = 7 - ((System.currentTimeMillis() - updateState.firstDetectedTime) / (1000 * 60 * 60 * 24))
+                        daysRemaining <= 0
+                    } else false
+                }
+
+                if (isForceLocked) {
+                    ForceUpdateScreen(
+                        versionName = updateState.latestVersionName,
+                        changelog = updateState.changelog,
+                        onUpdateClick = { updateViewModel.startDownload() }
+                    )
+                } else {
+                    NavHost(navController = navController, startDestination = "tasks") {
+                        composable("tasks") {
+                            TaskScreen(
+                                viewModel = viewModel,
+                                updateViewModel = updateViewModel,
+                                isDarkMode = isDarkMode,
+                                onDarkModeChange = { isDarkMode = it },
+                                onAddTask = { navController.navigate("task_edit/-1") },
+                            ) { taskId ->
+                                navController.navigate("task_edit/$taskId")
+                            }
+                        }
+                        composable(
+                            "task_edit/{taskId}",
+                            arguments = listOf(navArgument("taskId") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val taskId = backStackEntry.arguments?.getInt("taskId") ?: -1
+                            TaskEditScreen(
+                                taskId = taskId,
+                                viewModel = viewModel
+                            ) {
+                                navController.popBackStack()
+                            }
                         }
                     }
                 }

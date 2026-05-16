@@ -31,7 +31,23 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b1664d76-2930-4475-8203-1c537c4141e6" name="Changes" comment="" />
+    <list default="true" id="b1664d76-2930-4475-8203-1c537c4141e6" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/TasKitApp.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/TasKitApp.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/task/TaskScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/task/TaskScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/NotificationHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/NotificationHelper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/stitch_export/taskit_ax/DESIGN.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stitch_export/taskit_ax_add_task/code.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stitch_export/taskit_ax_add_task/screen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stitch_export/taskit_ax_home/screen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stitch_export/taskit_ax_logo.png/screen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stitch_export/taskit_ax_settings/screen.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/stitch_export/taskit_ax_statistics/screen.png" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -74,6 +90,9 @@
   }
 }</component>
   <component name="GradleScriptDefinitionsStorage" workingDir="$PROJECT_DIR$" gradleHome="C:\Users\rohit\.gradle\wrapper\dists\gradle-9.4.1-bin\arn2x92ynaizyzdaamcbpbhtj\gradle-9.4.1" javaHome="D:\Andriod Studio\jbr" gradleVersion="9.4.1" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 2,
   &quot;fromUser&quot;: false
@@ -85,7 +104,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Android App.TasKit.executor": "Debug",
+    "Android App.TasKit.executor": "Run",
     "Android App.app.executor": "Run",
     "GradleDaemonJvmCriteriaMigrationNotification.isNotificationDisabled": "true",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
@@ -103,7 +122,7 @@
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/rohit/AndroidStudioProjects/TasKit",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
+    "settings.editor.selected.configurable": "memory.settings"
   }
 }]]></component>
   <component name="RunManager" selected="Android App.TasKit">
@@ -290,12 +309,12 @@
       <map>
         <entry key="com.arcanox.taskit">
           <value>
-            <CheckInfo lastCheckTimestamp="1778825705165" />
+            <CheckInfo lastCheckTimestamp="1778921571560" />
           </value>
         </entry>
         <entry key="com.arcanox.taskit.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1778825705166" />
+            <CheckInfo lastCheckTimestamp="1778921571555" />
           </value>
         </entry>
       </map>
