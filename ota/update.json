@@ -1,9 +1,9 @@
 {
-  "versionCode": 2,
+  "versionCode": 5,
   "versionName": "1.5.2-beta",
   "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/latest/download/app-release.apk",
   "changelog": "• Futuristic OTA update system enabled\n• Branded notification icons\n• Improved background sync\n• Performance optimizations",
   "forceUpdateAfterDays": 7,
-  "releaseDate": "2026-05-16",
+  "releaseDate": "2026-05-17",
   "mandatory": true
 }
