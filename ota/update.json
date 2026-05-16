@@ -1,5 +1,5 @@
 {
-  "versionCode": 2,
+  "versionCode": 5,
   "versionName": "1.5.2-beta",
   "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/latest/download/app-release.apk",
   "changelog": "• Futuristic OTA update system enabled\n• Branded notification icons\n• Improved background sync\n• Performance optimizations",
