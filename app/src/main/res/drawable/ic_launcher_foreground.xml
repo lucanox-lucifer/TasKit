@@ -1,0 +1,67 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Transparent Background -->
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,0h108v108h-108z"/>
+
+    <!-- Rounded Square -->
+    <path
+        android:fillColor="#16214A"
+        android:pathData="M24,12
+                          H84
+                          A12,12 0 0 1 96,24
+                          V84
+                          A12,12 0 0 1 84,96
+                          H24
+                          A12,12 0 0 1 12,84
+                          V24
+                          A12,12 0 0 1 24,12z"/>
+
+    <!-- List Dots -->
+    <path
+        android:fillColor="#5E6BAA"
+        android:pathData="M28,32
+                          a4,4 0 1,0 8,0
+                          a4,4 0 1,0 -8,0"/>
+
+    <path
+        android:fillColor="#5E6BAA"
+        android:pathData="M28,46
+                          a4,4 0 1,0 8,0
+                          a4,4 0 1,0 -8,0"/>
+
+    <path
+        android:fillColor="#5E6BAA"
+        android:pathData="M28,60
+                          a4,4 0 1,0 8,0
+                          a4,4 0 1,0 -8,0"/>
+
+    <!-- List Lines -->
+    <path
+        android:fillColor="#5E6BAA"
+        android:pathData="M40,28h26a3,3 0 0 1 0,6h-26a3,3 0 0 1 0,-6z"/>
+
+    <path
+        android:fillColor="#5E6BAA"
+        android:pathData="M40,42h20a3,3 0 0 1 0,6h-20a3,3 0 0 1 0,-6z"/>
+
+    <!-- Check Mark -->
+    <path
+        android:fillColor="#6C63FF"
+        android:pathData="M42,63
+                          L52,73
+                          L78,47
+                          C80,45 83,45 85,47
+                          C87,49 87,52 85,54
+                          L56,83
+                          C54,85 51,85 49,83
+                          L35,69
+                          C33,67 33,64 35,62
+                          C37,60 40,60 42,63z"/>
+
+</vector>
