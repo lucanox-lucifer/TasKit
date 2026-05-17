@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
 
                 // Force Update Logic
                 val isForceLocked = remember(updateState) {
-                    if (!updateState.isUpToDate && updateState.isMandatory && (updateState.firstDetectedTime > 0)) {
+                    if ((!updateState.isUpToDate) && updateState.isMandatory && (updateState.firstDetectedTime > 0)) {
                         val daysRemaining = 7 - ((System.currentTimeMillis() - updateState.firstDetectedTime) / (1000 * 60 * 60 * 24))
                         daysRemaining <= 0
                     } else false

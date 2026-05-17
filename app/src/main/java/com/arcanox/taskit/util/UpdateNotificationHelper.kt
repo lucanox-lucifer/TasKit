@@ -64,18 +64,6 @@ class UpdateNotificationHelper @Inject constructor(
         notificationManager.notify(UPDATE_NOTIFICATION_ID, notification)
     }
 
-    fun showTestNotification() {
-        val notification = NotificationCompat.Builder(context, UPDATE_CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_stat_taskit)
-            .setContentTitle("TasKit Test Notification")
-            .setContentText("Your futuristic notification system is working perfectly!")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setAutoCancel(true)
-            .build()
-
-        notificationManager.notify(2001, notification)
-    }
-
     companion object {
         private const val UPDATE_CHANNEL_ID = "app_updates"
         private const val MANDATORY_CHANNEL_ID = "mandatory_updates"

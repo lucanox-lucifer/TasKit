@@ -815,6 +815,46 @@ fun SettingsScreen(
             }
         }
 
+        // Beta Versions Section
+        if (updateState.betaUpdates.isNotEmpty()) {
+            item {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text("BETA VERSIONS", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = StitchSecondary)
+            }
+            items(updateState.betaUpdates) { beta ->
+                Surface(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surface.copy(alpha = 0.05f),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text("v${beta.versionName}", fontWeight = FontWeight.Bold, color = StitchSecondary)
+                                Text(
+                                    "Released: ${beta.releaseDate}",
+                                    style = MaterialTheme.typography.labelSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            Button(
+                                onClick = { updateViewModel.startDownload(beta.apkUrl, beta.versionName) },
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = StitchSecondary.copy(alpha = 0.1f), contentColor = StitchSecondary)
+                            ) {
+                                Text("Join Beta")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         item {
             Spacer(modifier = Modifier.height(8.dp))
             Text("CATEGORIES", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = StitchPrimary)

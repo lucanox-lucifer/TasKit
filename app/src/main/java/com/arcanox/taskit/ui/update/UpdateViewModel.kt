@@ -6,8 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.arcanox.taskit.data.local.UpdatePreferenceManager
 import com.arcanox.taskit.data.repository.UpdateRepository
+import com.arcanox.taskit.data.remote.model.UpdateInfo
+import com.arcanox.taskit.data.remote.model.UpdateResponse
 import com.arcanox.taskit.util.DownloadHelper
-import com.arcanox.taskit.util.UpdateNotificationHelper
+import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -30,6 +32,7 @@ data class UpdateUIState(
     val showWhatsNew: Boolean = false,
     val isServiceOnline: Boolean = false,
     val isChecking: Boolean = false,
+    val betaUpdates: List<UpdateInfo> = emptyList(),
 )
 
 @HiltViewModel
@@ -37,7 +40,7 @@ class UpdateViewModel @Inject constructor(
     private val repository: UpdateRepository,
     private val downloadHelper: DownloadHelper,
     private val prefs: UpdatePreferenceManager,
-    private val notificationHelper: UpdateNotificationHelper,
+    private val gson: Gson,
     application: Application,
 ) : ViewModel() {
 
@@ -63,6 +66,18 @@ class UpdateViewModel @Inject constructor(
         
         viewModelScope.launch {
             repository.getLocalUpdateData().collect { prefsData ->
+                val allUpdates = try {
+                    if (prefsData.allUpdatesJson.isNotEmpty()) {
+                        gson.fromJson(prefsData.allUpdatesJson, UpdateResponse::class.java).updates
+                    } else emptyList()
+                } catch (_: Exception) {
+                    emptyList()
+                }
+
+                val betaUpdates = allUpdates
+                    .filter { it.isBeta && (it.versionCode > currentVersionCode) }
+                    .sortedByDescending { it.versionCode }
+
                 _uiState.update { state ->
                     val showWhatsNew = (prefsData.lastSeenVersion != -1) && 
                                       (currentVersionCode > prefsData.lastSeenVersion)
@@ -80,7 +95,8 @@ class UpdateViewModel @Inject constructor(
                         lastCheckedTime = prefsData.lastCheckedTime,
                         isUpToDate = prefsData.latestVersionCode <= currentVersionCode,
                         firstDetectedTime = prefsData.firstDetectedTime,
-                        showWhatsNew = showWhatsNew
+                        showWhatsNew = showWhatsNew,
+                        betaUpdates = betaUpdates
                     )
                 }
             }
@@ -110,11 +126,11 @@ class UpdateViewModel @Inject constructor(
         }
     }
 
-    fun startDownload() {
-        val url = uiState.value.apkUrl
-        val versionName = uiState.value.latestVersionName
-        if (url.isNotEmpty()) {
-            currentDownloadId = downloadHelper.startDownload(url, "TasKit_$versionName.apk")
+    fun startDownload(url: String? = null, versionName: String? = null) {
+        val finalUrl = url ?: uiState.value.apkUrl
+        val finalVersion = versionName ?: uiState.value.latestVersionName
+        if (finalUrl.isNotEmpty()) {
+            currentDownloadId = downloadHelper.startDownload(finalUrl, "TasKit_$finalVersion.apk")
             _uiState.update { it.copy(isDownloading = true) }
         }
     }
@@ -125,9 +141,5 @@ class UpdateViewModel @Inject constructor(
             currentDownloadId = null
             _uiState.update { it.copy(isDownloading = false) }
         }
-    }
-
-    fun sendTestNotification() {
-        notificationHelper.showTestNotification()
     }
 }

@@ -1,9 +1,18 @@
 {
-  "versionCode": 2,
-  "versionName": "1.5.2-beta",
-  "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/latest/download/app-release.apk",
-  "changelog": "• Futuristic OTA update system enabled\n• Branded notification icons\n• Improved background sync\n• Performance optimizations",
-  "forceUpdateAfterDays": 7,
-  "releaseDate": "2026-05-17",
-  "mandatory": true
+  "updates": [
+    {
+      "versionCode": 2,
+      "versionName": "1.5.2",
+      "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/latest/download/app-release.apk",
+      "changelog": "• Modern premium UI improvements\n• OTA update system enabled\n• Added update progress bar and cancel download option\n• Added spinner while checking updates\n• Instant OTA offline status detection\n• Improved update notifications and changelog viewer\n• Better settings integration\n• Smoother animations and transitions\n• Background update detection improvements\n• Performance optimizations and stability fixes",
+      "releaseDate": "2026-05-17"
+    },
+    {
+      "versionCode": 3,
+      "versionName": "1.6.0-beta",
+      "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/latest/download/app-release-beta.apk",
+      "changelog": "• Early access to new task categorization\n• Experimental dark mode refinements\n• Advanced analytics preview",
+      "releaseDate": "2026-05-18"
+    }
+  ]
 }

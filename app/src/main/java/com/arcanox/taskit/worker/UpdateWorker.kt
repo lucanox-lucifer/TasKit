@@ -1,7 +1,6 @@
 package com.arcanox.taskit.worker
 
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
@@ -23,7 +22,7 @@ class UpdateWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         val result = repository.checkUpdate()
         if (result.isSuccess) {
-            val update = result.getOrNull() ?: return Result.failure()
+            val prefsData = repository.getLocalUpdateData().first()
             
             val currentVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 applicationContext.packageManager
@@ -34,16 +33,19 @@ class UpdateWorker @AssistedInject constructor(
                     .getPackageInfo(applicationContext.packageName, 0).versionCode
             }
             
-            if (update.versionCode > currentVersionCode) {
+            if (prefsData.latestVersionCode > currentVersionCode) {
                 var daysLeft: Int? = null
-                if (update.mandatory) {
-                    val prefsData = repository.getLocalUpdateData().first()
+                if (prefsData.mandatory) {
                     if (prefsData.firstDetectedTime > 0) {
                         val elapsed = System.currentTimeMillis() - prefsData.firstDetectedTime
                         daysLeft = (7 - (elapsed / (1000 * 60 * 60 * 24))).toInt().coerceAtLeast(0)
                     }
                 }
-                notificationHelper.showUpdateAvailable(update.versionName, update.mandatory, daysLeft)
+                notificationHelper.showUpdateAvailable(
+                    prefsData.latestVersionName,
+                    prefsData.mandatory,
+                    daysLeft,
+                )
             }
         }
         return Result.success()

@@ -5,8 +5,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import java.io.File
 
 class UpdateReceiver : BroadcastReceiver() {
@@ -25,14 +25,14 @@ class UpdateReceiver : BroadcastReceiver() {
         val query = DownloadManager.Query().setFilterById(downloadId)
         val cursor = downloadManager.query(query)
 
-        if (cursor != null && cursor.moveToFirst()) {
+        if ((cursor != null) && cursor.moveToFirst()) {
             val statusIndex = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)
-            if (statusIndex != -1 && DownloadManager.STATUS_SUCCESSFUL == cursor.getInt(statusIndex)) {
+            if ((statusIndex != -1) && (DownloadManager.STATUS_SUCCESSFUL == cursor.getInt(statusIndex))) {
                 val uriIndex = cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)
                 if (uriIndex != -1) {
                     val uriString = cursor.getString(uriIndex)
                     if (uriString != null) {
-                        val apkUri = Uri.parse(uriString)
+                        val apkUri = uriString.toUri()
                         val apkFile = File(apkUri.path ?: "")
                         
                         val intent = Intent(Intent.ACTION_VIEW).apply {
