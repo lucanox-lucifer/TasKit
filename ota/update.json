@@ -17,7 +17,7 @@
     {
       "versionCode": 3,
       "versionName": "1.5.4-beta",
-      "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/latest/download/app-release-beta.apk",
+      "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/download/v1.5.4-beta/TasKit.v1.5.4-beta.apk",
       "changelog": "• Early access to new task categorization\n• Experimental dark mode refinements\n• Advanced analytics preview",
       "releaseDate": "2026-05-18"
     },
