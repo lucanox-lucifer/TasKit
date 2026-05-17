@@ -36,17 +36,6 @@
       <change beforePath="$PROJECT_DIR$/app/release/TasKit v1.0.0.apk" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/release/baselineProfiles/0/app-release.dm" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/baselineProfiles/0/app-release.dm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/release/baselineProfiles/1/app-release.dm" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/baselineProfiles/1/app-release.dm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/data/local/UpdatePreferenceManager.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/data/local/UpdatePreferenceManager.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/data/remote/model/UpdateResponse.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/data/remote/model/UpdateResponse.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/data/repository/UpdateRepository.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/data/repository/UpdateRepository.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/di/NetworkModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/di/NetworkModule.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/task/TaskScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/task/TaskScreen.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/update/UpdateViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/update/UpdateViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/DownloadHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/DownloadHelper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/UpdateNotificationHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/UpdateNotificationHelper.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/UpdateReceiver.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/UpdateReceiver.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/worker/UpdateWorker.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/worker/UpdateWorker.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ota/update.json" beforeDir="false" afterPath="$PROJECT_DIR$/ota/update.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -358,7 +347,15 @@
       <option name="project" value="LOCAL" />
       <updated>1779022083675</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="feat: Implement futuristic OTA update system with GitHub integration">
+      <option name="closed" value="true" />
+      <created>1779038015267</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1779038015268</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
