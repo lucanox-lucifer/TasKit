@@ -27,8 +27,8 @@ android {
         minSdk = 26
         targetSdk = 34
 
-        versionCode = 3
-        versionName = "1.5.4-beta"
+        versionCode = 4
+        versionName = "1.5.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -152,11 +152,10 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    // Import the Firebase BoM
-    implementation(platform("com.google.firebase:firebase-bom:34.13.0"))
-
-
-    // TODO: Add the dependencies for Firebase products you want to use
+    // Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.analytics)
     // When using the BoM, don't specify versions in Firebase dependencies
     // https://firebase.google.com/docs/android/setup#available-libraries
 

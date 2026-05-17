@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">TasKit</string>
+    <string name="default_notification_channel_id" translatable="false">taskit_notifications</string>
 </resources>

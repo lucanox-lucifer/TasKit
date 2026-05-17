@@ -32,14 +32,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b1664d76-2930-4475-8203-1c537c4141e6" name="Changes" comment="feat: Implement futuristic OTA update system with GitHub integration">
-      <change beforePath="$PROJECT_DIR$/.idea/planningMode.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/planningMode.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.kotlin/sessions/kotlin-compiler-198428772005674619.salive" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/release/TasKit v1.0.0.apk" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/release/baselineProfiles/0/app-release.dm" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/baselineProfiles/0/app-release.dm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/release/baselineProfiles/1/app-release.dm" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/baselineProfiles/1/app-release.dm" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/release/output-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/output-metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/libs.versions.toml" beforeDir="false" afterPath="$PROJECT_DIR$/gradle/libs.versions.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ota/update.json" beforeDir="false" afterPath="$PROJECT_DIR$/ota/update.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,7 +52,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=OV95S4QSNNHMWOCQ]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -97,13 +100,16 @@
   &quot;fromUser&quot;: false
 }</component>
   <component name="ProjectId" id="3DkRCZLfdphVZdhpisboxhEnybQ" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "Android App.TasKit.executor": "Debug",
+    "Android App.TasKit.executor": "Run",
     "Android App.app.executor": "Run",
     "ApkExportedModule": "TasKit.app",
     "ExportApk.ApkPathForTasKit.app": "C:\\Users\\rohit\\AndroidStudioProjects\\TasKit\\app",
@@ -390,7 +396,23 @@
       <option name="project" value="LOCAL" />
       <updated>1779039411311</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="feat: Implement futuristic OTA update system with GitHub integration">
+      <option name="closed" value="true" />
+      <created>1779040107088</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1779040107088</updated>
+    </task>
+    <task id="LOCAL-00016" summary="feat: Implement futuristic OTA update system with GitHub integration">
+      <option name="closed" value="true" />
+      <created>1779040931047</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1779040931047</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -434,12 +456,12 @@
       <map>
         <entry key="com.arcanox.taskit">
           <value>
-            <CheckInfo lastCheckTimestamp="1778921571560" />
+            <CheckInfo lastCheckTimestamp="1779041746060" />
           </value>
         </entry>
         <entry key="com.arcanox.taskit.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1778921571555" />
+            <CheckInfo lastCheckTimestamp="1779041746062" />
           </value>
         </entry>
       </map>

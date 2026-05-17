@@ -25,6 +25,8 @@ import androidx.compose.ui.platform.LocalLifecycleOwner
 import com.arcanox.taskit.ui.update.UpdateViewModel
 import com.arcanox.taskit.ui.update.ForceUpdateScreen
 import com.arcanox.taskit.ui.theme.TasKitTheme
+import com.google.firebase.messaging.FirebaseMessaging
+import android.util.Log
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,11 +40,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
+        // Request notification permission for Android 13+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
+
+        // Subscribe to global topic "all" for general notifications
+        FirebaseMessaging.getInstance().subscribeToTopic("all")
+            .addOnCompleteListener { task ->
+                val msg = if (task.isSuccessful) "Subscribed to 'all' topic" else "Subscription to 'all' failed"
+                Log.d("MainActivity", msg)
+            }
 
         setContent {
             val systemDark = isSystemInDarkTheme()
