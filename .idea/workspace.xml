@@ -32,11 +32,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b1664d76-2930-4475-8203-1c537c4141e6" name="Changes" comment="feat: Implement futuristic OTA update system with GitHub integration">
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.kotlin/sessions/kotlin-compiler-9163514044055490844.salive" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/release/TasKit v1.0.0.apk" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/TasKit v1.0.0.apk" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/build.gradle.kts" beforeDir="false" afterPath="$PROJECT_DIR$/app/build.gradle.kts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/release/TasKit v1.0.0.apk" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/app/release/baselineProfiles/0/app-release.dm" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/baselineProfiles/0/app-release.dm" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/release/baselineProfiles/1/app-release.dm" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/baselineProfiles/1/app-release.dm" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/release/output-metadata.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/release/output-metadata.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/TasKitApp.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/TasKitApp.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/task/TaskScreen.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/task/TaskScreen.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/update/UpdateViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/ui/update/UpdateViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/DownloadHelper.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/arcanox/taskit/util/DownloadHelper.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ota/update.json" beforeDir="false" afterPath="$PROJECT_DIR$/ota/update.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,7 +54,7 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[PhysicalDevice::serial=OV95S4QSNNHMWOCQ]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[]" />
   <component name="ExternalProjectsData">
     <projectState path="$PROJECT_DIR$">
       <ProjectState />
@@ -67,6 +75,7 @@
   <component name="GenerateSignedApkSettings">
     <option name="KEY_STORE_PATH" value="C:\Users\rohit\AndroidStudioProjects\TasKit\taskit-release.jks" />
     <option name="KEY_ALIAS" value="taskit-key" />
+    <option name="REMEMBER_PASSWORDS" value="true" />
     <option name="BUILD_TARGET_KEY" value="apk" />
   </component>
   <component name="Git.Settings">
@@ -99,7 +108,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;Android App.TasKit.executor&quot;: &quot;Debug&quot;,
+    &quot;Android App.TasKit.executor&quot;: &quot;Run&quot;,
     &quot;Android App.app.executor&quot;: &quot;Run&quot;,
     &quot;ApkExportedModule&quot;: &quot;TasKit.app&quot;,
     &quot;ExportApk.ApkPathForTasKit.app&quot;: &quot;C:\\Users\\rohit\\AndroidStudioProjects\\TasKit\\app&quot;,
@@ -330,7 +339,15 @@
       <option name="project" value="LOCAL" />
       <updated>1778946690076</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="feat: Implement futuristic OTA update system with GitHub integration">
+      <option name="closed" value="true" />
+      <created>1778950358450</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1778950358450</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

@@ -28,7 +28,8 @@ data class UpdateUIState(
     val error: String? = null,
     val firstDetectedTime: Long = 0,
     val showWhatsNew: Boolean = false,
-    val isServiceOnline: Boolean = false
+    val isServiceOnline: Boolean = false,
+    val isChecking: Boolean = false,
 )
 
 @HiltViewModel
@@ -37,11 +38,13 @@ class UpdateViewModel @Inject constructor(
     private val downloadHelper: DownloadHelper,
     private val prefs: UpdatePreferenceManager,
     private val notificationHelper: UpdateNotificationHelper,
-    private val application: Application
+    application: Application,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UpdateUIState())
     val uiState: StateFlow<UpdateUIState> = _uiState.asStateFlow()
+
+    private var currentDownloadId: Long? = null
 
     private val packageInfo = application.packageManager.getPackageInfo(application.packageName, 0)
     private val currentVersionCode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -61,8 +64,8 @@ class UpdateViewModel @Inject constructor(
         viewModelScope.launch {
             repository.getLocalUpdateData().collect { prefsData ->
                 _uiState.update { state ->
-                    val showWhatsNew = prefsData.lastSeenVersion != -1 && 
-                                      currentVersionCode > prefsData.lastSeenVersion
+                    val showWhatsNew = (prefsData.lastSeenVersion != -1) && 
+                                      (currentVersionCode > prefsData.lastSeenVersion)
                     
                     if (showWhatsNew) {
                         dismissWhatsNew() // Update last seen version
@@ -101,8 +104,9 @@ class UpdateViewModel @Inject constructor(
 
     fun checkUpdate() {
         viewModelScope.launch {
+            _uiState.update { it.copy(isChecking = true) }
             val result = repository.checkUpdate()
-            _uiState.update { it.copy(isServiceOnline = result.isSuccess) }
+            _uiState.update { it.copy(isServiceOnline = result.isSuccess, isChecking = false) }
         }
     }
 
@@ -110,8 +114,16 @@ class UpdateViewModel @Inject constructor(
         val url = uiState.value.apkUrl
         val versionName = uiState.value.latestVersionName
         if (url.isNotEmpty()) {
-            downloadHelper.startDownload(url, "TasKit_$versionName.apk")
+            currentDownloadId = downloadHelper.startDownload(url, "TasKit_$versionName.apk")
             _uiState.update { it.copy(isDownloading = true) }
+        }
+    }
+
+    fun cancelDownload() {
+        currentDownloadId?.let { id ->
+            downloadHelper.cancelDownload(id)
+            currentDownloadId = null
+            _uiState.update { it.copy(isDownloading = false) }
         }
     }
 

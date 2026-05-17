@@ -35,7 +35,7 @@ class TasKitApp : Application(), Configuration.Provider {
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             "ota_update_check",
             ExistingPeriodicWorkPolicy.KEEP,
-            updateRequest
+            updateRequest,
         )
     }
 

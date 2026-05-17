@@ -184,7 +184,7 @@ fun TaskScreen(
                     containerColor = StitchPrimary,
                     contentColor = StitchOnPrimary,
                     shape = RoundedCornerShape(20.dp),
-                    modifier = Modifier.padding(bottom = 100.dp)
+                    modifier = Modifier.padding(bottom = 24.dp)
                 ) {
                     Icon(Icons.Default.Add, contentDescription = "Add Task", modifier = Modifier.size(32.dp))
                 }
@@ -761,11 +761,22 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.height(16.dp))
                     
                     if (updateState.isDownloading) {
-                        LinearProgressIndicator(
-                            modifier = Modifier.fillMaxWidth().clip(CircleShape),
-                            color = StitchPrimary,
-                            trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
-                        )
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            LinearProgressIndicator(
+                                modifier = Modifier.fillMaxWidth().clip(CircleShape),
+                                color = StitchPrimary,
+                                trackColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                            )
+                            Spacer(Modifier.height(16.dp))
+                            Button(
+                                onClick = { updateViewModel.cancelDownload() },
+                                modifier = Modifier.fillMaxWidth(),
+                                shape = RoundedCornerShape(12.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = StitchError.copy(alpha = 0.1f), contentColor = StitchError)
+                            ) {
+                                Text("Cancel Download")
+                            }
+                        }
                     } else {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -775,9 +786,18 @@ fun SettingsScreen(
                                 onClick = { updateViewModel.checkUpdate() },
                                 modifier = Modifier.weight(1f),
                                 shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary.copy(alpha = 0.1f), contentColor = StitchPrimary)
+                                colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary.copy(alpha = 0.1f), contentColor = StitchPrimary),
+                                enabled = !updateState.isChecking
                             ) {
-                                Text("Check")
+                                if (updateState.isChecking) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(20.dp),
+                                        strokeWidth = 2.dp,
+                                        color = StitchPrimary
+                                    )
+                                } else {
+                                    Text("Check")
+                                }
                             }
                             if (!updateState.isUpToDate) {
                                 Button(
@@ -790,34 +810,6 @@ fun SettingsScreen(
                                 }
                             }
                         }
-                    }
-                }
-            }
-        }
-
-        item {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text("NOTIFICATIONS", style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraBold, color = StitchPrimary)
-        }
-        item {
-            Surface(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.05f),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f))
-            ) {
-                Column(modifier = Modifier.padding(16.dp)) {
-                    SettingsToggle("Enable Notifications", notificationsEnabled, onNotificationsChange)
-                    SettingsToggle("OTA Update Notifications", true) { /* TODO */ }
-                    SettingsToggle("Daily Reminder Notifications", true) { /* TODO */ }
-                    SettingsToggle("Mandatory Update Alerts", true) { /* TODO */ }
-                    
-                    Button(
-                        onClick = { updateViewModel.sendTestNotification() },
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary.copy(alpha = 0.1f), contentColor = StitchPrimary)
-                    ) {
-                        Text("TEST NOTIFICATION")
                     }
                 }
             }

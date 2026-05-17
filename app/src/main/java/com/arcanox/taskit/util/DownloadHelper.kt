@@ -39,4 +39,8 @@ class DownloadHelper @Inject constructor(
         cursor?.close()
         return status
     }
+
+    fun cancelDownload(downloadId: Long) {
+        downloadManager.remove(downloadId)
+    }
 }
