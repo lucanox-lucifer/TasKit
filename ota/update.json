@@ -34,6 +34,13 @@
       "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/latest/download/app-release-beta.apk",
       "changelog": "• Early access to new task categorization\n• Experimental dark mode refinements\n• Advanced analytics preview",
       "releaseDate": "2026-05-18"
+    },
+    {
+      "versionCode": 6,
+      "versionName": "1.6.0-beta",
+      "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/latest/download/app-release-beta.apk",
+      "changelog": "• Early access to new task categorization\n• Experimental dark mode refinements\n• Advanced analytics preview",
+      "releaseDate": "2026-05-18"
     }
   ]
 }
