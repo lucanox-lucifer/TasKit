@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.kotlin.compose)
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
 }
 
 val keystoreProperties = Properties()
@@ -25,8 +27,8 @@ android {
         minSdk = 26
         targetSdk = 34
 
-        versionCode = 2
-        versionName = "1.5.2-beta"
+        versionCode = 3
+        versionName = "1.5.4-beta"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -150,5 +152,12 @@ dependencies {
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    // Import the Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:34.13.0"))
+
+
+    // TODO: Add the dependencies for Firebase products you want to use
+    // When using the BoM, don't specify versions in Firebase dependencies
+    // https://firebase.google.com/docs/android/setup#available-libraries
 
 }
