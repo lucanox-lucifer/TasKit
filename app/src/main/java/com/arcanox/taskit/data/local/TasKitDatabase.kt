@@ -8,7 +8,7 @@ import com.arcanox.taskit.data.local.dao.TaskDao
 import com.arcanox.taskit.data.local.entity.CategoryEntity
 import com.arcanox.taskit.data.local.entity.TaskEntity
 
-@Database(entities = [TaskEntity::class, CategoryEntity::class], version = 2, exportSchema = false)
+@Database(entities = [TaskEntity::class, CategoryEntity::class], version = 3, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class TasKitDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao

@@ -8,17 +8,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.arcanox.taskit.ui.theme.StitchError
-import com.arcanox.taskit.ui.theme.StitchPrimary
-import com.arcanox.taskit.ui.theme.StitchSurface
+import com.arcanox.taskit.ui.theme.*
 
 @Composable
 fun ForceUpdateScreen(
@@ -26,10 +23,30 @@ fun ForceUpdateScreen(
     changelog: String,
     onUpdateClick: () -> Unit
 ) {
+    var showConfirm by remember { mutableStateOf(false) }
+
+    if (showConfirm) {
+        AlertDialog(
+            onDismissRequest = { showConfirm = false },
+            title = { Text("Confirm Update") },
+            text = { Text("Do you want to download and install TasKit v$versionName now?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    onUpdateClick()
+                    showConfirm = false
+                }) { Text("Download") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirm = false }) { Text("Cancel") }
+            },
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(StitchSurface)
+            .background(MaterialTheme.colorScheme.background)
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -44,16 +61,16 @@ fun ForceUpdateScreen(
                 imageVector = Icons.Default.SystemUpdate,
                 contentDescription = null,
                 modifier = Modifier.size(80.dp),
-                tint = StitchError
+                tint = MaterialTheme.colorScheme.error
             )
             
             Spacer(modifier = Modifier.height(24.dp))
             
             Text(
                 text = "Update Required",
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.White
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onBackground
             )
             
             Spacer(modifier = Modifier.height(8.dp))
@@ -61,7 +78,7 @@ fun ForceUpdateScreen(
             Text(
                 text = "A critical update (v$versionName) is required to continue using TasKit. The grace period for this update has expired.",
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.7f),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
             
@@ -69,21 +86,21 @@ fun ForceUpdateScreen(
             
             Surface(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                color = Color.White.copy(alpha = 0.05f)
+                shape = RoundedCornerShape(20.dp),
+                color = MaterialTheme.colorScheme.surface
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
                         text = "WHAT'S NEW",
-                        style = MaterialTheme.typography.labelMedium,
+                        style = MaterialTheme.typography.labelSmall,
                         fontWeight = FontWeight.Bold,
-                        color = StitchPrimary
+                        color = MaterialTheme.colorScheme.primary
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = changelog,
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.9f)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -91,16 +108,19 @@ fun ForceUpdateScreen(
             Spacer(modifier = Modifier.height(48.dp))
             
             Button(
-                onClick = onUpdateClick,
+                onClick = { showConfirm = true },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = StitchPrimary)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) {
                 Text(
                     "UPDATE NOW",
-                    fontWeight = FontWeight.ExtraBold,
+                    fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 )
             }

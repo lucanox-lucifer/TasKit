@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="notification_color">#F3E6C7</color>
+    <color name="brand_background">#0F0F10</color>
+    <color name="brand_surface">#17181A</color>
+    <color name="brand_primary">#F3E6C7</color>
+    <color name="brand_primary_light">#FFECC8</color>
+    <color name="brand_white">#FFFFFF</color>
+    <color name="brand_secondary_text">#A1A1AA</color>
+</resources>

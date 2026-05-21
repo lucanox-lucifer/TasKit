@@ -23,4 +23,7 @@ interface TaskDao {
 
     @Query("SELECT * FROM tasks WHERE title LIKE '%' || :query || '%' OR note LIKE '%' || :query || '%'")
     fun searchTasks(query: String): Flow<List<TaskEntity>>
+
+    @Query("SELECT * FROM tasks WHERE category = :category ORDER BY createdAt DESC")
+    fun getTasksByCategory(category: String): Flow<List<TaskEntity>>
 }

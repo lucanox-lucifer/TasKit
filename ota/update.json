@@ -25,14 +25,14 @@
       "versionCode": 4,
       "versionName": "1.5.6",
       "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/download/v1.5.6/TasKit.v1.5.6.apk",
-      "changelog": "• Fixed critical sync issues\n• Improved notification reliability\n• UI polish for task details",
+      "changelog": "• Fixed critical sync issues\n• Improved notification reliability",
       "releaseDate": "2026-05-18"
     },
     {
-      "versionCode": 8,
-      "versionName": "1.6.0",
+      "versionCode": 5,
+      "versionName": "2.0.0",
       "apkUrl": "https://github.com/lucanox-lucifer/TasKit/releases/download/v1.5.6/TasKit.v1.5.6.apk",
-      "changelog": "• Fixed critical sync issues\n• Improved notification reliability\n• UI polish for task details",
+      "changelog": "• Fixed critical sync issues\n• Improved notification reliability\n• UI polish for task details\n• Improved categories.",
       "releaseDate": "2026-05-18"
     }
   ]

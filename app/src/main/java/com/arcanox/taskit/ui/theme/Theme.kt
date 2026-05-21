@@ -1,57 +1,53 @@
 package com.arcanox.taskit.ui.theme
 
 import android.app.Activity
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 private val DarkColorScheme = darkColorScheme(
-    primary = StitchPrimary,
-    onPrimary = StitchOnPrimary,
-    primaryContainer = StitchPrimaryContainer,
-    onPrimaryContainer = StitchOnPrimaryContainer,
-    secondary = StitchSecondary,
-    onSecondary = StitchOnSecondary,
-    secondaryContainer = StitchSecondaryContainer,
-    onSecondaryContainer = StitchOnSecondaryContainer,
-    tertiary = StitchTertiary,
-    onTertiary = StitchOnTertiary,
-    tertiaryContainer = StitchTertiaryContainer,
-    onTertiaryContainer = StitchOnTertiaryContainer,
-    background = StitchSurface,
-    onBackground = StitchOnSurface,
-    surface = StitchSurfaceContainer,
-    onSurface = StitchOnSurface,
-    surfaceVariant = StitchSurfaceVariant,
-    onSurfaceVariant = StitchOnSurfaceVariant,
-    error = StitchError,
-    onError = StitchOnError
+    primary = Primary,
+    onPrimary = Background,
+    primaryContainer = Surface,
+    onPrimaryContainer = PrimaryLight,
+    secondary = PrimaryLight,
+    onSecondary = Background,
+    background = Background,
+    onBackground = TextPrimary,
+    surface = Surface,
+    onSurface = TextPrimary,
+    surfaceVariant = SurfaceVariant,
+    onSurfaceVariant = TextSecondary,
+    error = ErrorRed,
+    outline = DividerColor
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = StitchPrimaryLight,
-    onPrimary = StitchOnPrimaryLight,
-    secondary = StitchSecondaryLight,
-    onSecondary = StitchOnSecondaryLight,
-    tertiary = StitchTertiaryLight,
-    onTertiary = StitchOnTertiaryLight,
-    background = StitchSurfaceLight,
-    onBackground = StitchOnSurfaceLight,
-    surface = StitchSurfaceContainerLight,
-    onSurface = StitchOnSurfaceLight,
-    surfaceVariant = StitchSurfaceContainerLight,
-    onSurfaceVariant = StitchOnSurfaceVariantLight,
+    primary = LightPrimary,
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFEADDFF),
+    onPrimaryContainer = Color(0xFF21005D),
+    secondary = Color(0xFF625B71),
+    onSecondary = Color.White,
+    background = LightBackground,
+    onBackground = LightTextPrimary,
+    surface = LightSurface,
+    onSurface = LightTextPrimary,
+    surfaceVariant = LightSurfaceVariant,
+    onSurfaceVariant = LightTextSecondary,
+    error = ErrorRed,
+    outline = LightDivider
 )
 
 @Composable
 fun TasKitTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = true,
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
@@ -60,7 +56,10 @@ fun TasKitTheme(
         SideEffect {
             val window = (view.context as Activity).window
             window.statusBarColor = colorScheme.background.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = !darkTheme
+            window.navigationBarColor = colorScheme.background.toArgb()
+            val controller = WindowCompat.getInsetsController(window, view)
+            controller.isAppearanceLightStatusBars = !darkTheme
+            controller.isAppearanceLightNavigationBars = !darkTheme
         }
     }
 

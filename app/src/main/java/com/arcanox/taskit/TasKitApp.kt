@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.*
 import com.arcanox.taskit.util.NotificationHelper
-import com.arcanox.taskit.util.UpdateNotificationHelper
 import com.arcanox.taskit.worker.UpdateWorker
 import dagger.hilt.android.HiltAndroidApp
 import java.util.concurrent.TimeUnit
@@ -14,12 +13,11 @@ import javax.inject.Inject
 class TasKitApp : Application(), Configuration.Provider {
     
     @Inject lateinit var workerFactory: HiltWorkerFactory
-    @Inject lateinit var updateNotificationHelper: UpdateNotificationHelper
+    @Inject lateinit var notificationHelper: NotificationHelper
 
     override fun onCreate() {
         super.onCreate()
-        NotificationHelper(this).createNotificationChannel()
-        updateNotificationHelper.createUpdateChannels()
+        notificationHelper.createNotificationChannels()
         scheduleUpdateChecks()
     }
 

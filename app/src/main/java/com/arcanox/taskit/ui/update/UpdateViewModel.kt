@@ -9,6 +9,7 @@ import com.arcanox.taskit.data.repository.UpdateRepository
 import com.arcanox.taskit.data.remote.model.UpdateInfo
 import com.arcanox.taskit.data.remote.model.UpdateResponse
 import com.arcanox.taskit.util.DownloadHelper
+import com.arcanox.taskit.util.NotificationHelper
 import com.google.gson.Gson
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
@@ -39,6 +40,7 @@ data class UpdateUIState(
 class UpdateViewModel @Inject constructor(
     private val repository: UpdateRepository,
     private val downloadHelper: DownloadHelper,
+    private val notificationHelper: NotificationHelper,
     private val prefs: UpdatePreferenceManager,
     private val gson: Gson,
     application: Application,
@@ -78,12 +80,22 @@ class UpdateViewModel @Inject constructor(
                     .filter { it.isBeta && (it.versionCode > currentVersionCode) }
                     .sortedByDescending { it.versionCode }
 
+                val isUpToDate = prefsData.latestVersionCode <= currentVersionCode
+
                 _uiState.update { state ->
                     val showWhatsNew = (prefsData.lastSeenVersion != -1) && 
                                       (currentVersionCode > prefsData.lastSeenVersion)
                     
                     if (showWhatsNew) {
-                        dismissWhatsNew() // Update last seen version
+                        dismissWhatsNew()
+                    }
+
+                    // Auto-download after 7 days if mandatory and not up to date
+                    if (!isUpToDate && prefsData.mandatory && prefsData.firstDetectedTime > 0) {
+                        val daysDetected = (System.currentTimeMillis() - prefsData.firstDetectedTime) / (1000 * 60 * 60 * 24)
+                        if (daysDetected >= 7 && !state.isDownloading) {
+                            startDownload(prefsData.apkUrl, prefsData.latestVersionName)
+                        }
                     }
 
                     state.copy(
@@ -93,7 +105,7 @@ class UpdateViewModel @Inject constructor(
                         isMandatory = prefsData.mandatory,
                         apkUrl = prefsData.apkUrl,
                         lastCheckedTime = prefsData.lastCheckedTime,
-                        isUpToDate = prefsData.latestVersionCode <= currentVersionCode,
+                        isUpToDate = isUpToDate,
                         firstDetectedTime = prefsData.firstDetectedTime,
                         showWhatsNew = showWhatsNew,
                         betaUpdates = betaUpdates
@@ -102,7 +114,6 @@ class UpdateViewModel @Inject constructor(
             }
         }
         
-        // Ensure we have a last seen version if it's the first time
         viewModelScope.launch {
             val data = repository.getLocalUpdateData().first()
             if (data.lastSeenVersion == -1) {
@@ -122,6 +133,12 @@ class UpdateViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isChecking = true) }
             val result = repository.checkUpdate()
+            if (result.isSuccess) {
+                val update = result.getOrNull()?.updates?.maxByOrNull { it.versionCode }
+                if (update != null && update.versionCode > currentVersionCode) {
+                    notificationHelper.showUpdateNotification(update.versionName, update.changelog)
+                }
+            }
             _uiState.update { it.copy(isServiceOnline = result.isSuccess, isChecking = false) }
         }
     }

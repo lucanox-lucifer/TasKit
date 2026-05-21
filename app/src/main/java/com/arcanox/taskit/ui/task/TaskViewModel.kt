@@ -24,24 +24,75 @@ data class TaskStats(
     val completedTasks: Int = 0
 )
 
+data class CategoryWithCount(
+    val category: CategoryEntity,
+    val taskCount: Int
+)
+
 @HiltViewModel
 class TaskViewModel @Inject constructor(
     private val repository: TaskRepository,
     private val application: Application
 ) : ViewModel() {
 
+    private val _categorySearchQuery = MutableStateFlow("")
+    val categorySearchQuery: StateFlow<String> = _categorySearchQuery
+
+    val categories: StateFlow<List<CategoryEntity>> = repository.getAllCategories()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    private val allTasksUnfiltered: StateFlow<List<TaskEntity>> = repository.getAllTasks()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    val categoriesWithCounts: StateFlow<List<CategoryWithCount>> = combine(
+        categories,
+        allTasksUnfiltered,
+        _categorySearchQuery
+    ) { categories, tasks, query ->
+        categories
+            .filter { it.name.contains(query, ignoreCase = true) }
+            .map { category ->
+                CategoryWithCount(
+                    category = category,
+                    taskCount = tasks.count { it.category == category.name }
+                )
+            }
+            .distinctBy { it.category.name } // Extra safety for duplicate names
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    init {
+        viewModelScope.launch {
+            // Use a slight delay or wait for the first emission to check properly
+            val currentCategories = repository.getAllCategories().first()
+            if (currentCategories.isEmpty()) {
+                repository.prepopulateCategories()
+            }
+        }
+    }
+
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
 
-    val allTasks: StateFlow<List<TaskEntity>> = _searchQuery
-        .flatMapLatest { query ->
-            if (query.isEmpty()) {
+    private val _selectedCategory = MutableStateFlow<String?>(null)
+    val selectedCategory: StateFlow<String?> = _selectedCategory
+
+    val allTasks: StateFlow<List<TaskEntity>> = combine(_searchQuery, _selectedCategory) { query, category ->
+        query to category
+    }.flatMapLatest { (query, category) ->
+        if (query.isEmpty()) {
+            if (category == null || category == "All Tasks") {
                 repository.getAllTasks()
             } else {
-                repository.searchTasks(query)
+                repository.getTasksByCategory(category)
             }
+        } else {
+            repository.searchTasks(query)
         }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    fun selectCategory(category: String?) {
+        _selectedCategory.value = if (category == "All Tasks") null else category
+    }
 
     val activeTasks: StateFlow<List<TaskEntity>> = allTasks
         .map { list -> list.filter { !it.isCompleted } }
@@ -51,10 +102,7 @@ class TaskViewModel @Inject constructor(
         .map { list -> list.filter { it.isCompleted } }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val categories: StateFlow<List<CategoryEntity>> = repository.getAllCategories()
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    val stats: StateFlow<TaskStats> = allTasks.map { list ->
+    val stats: StateFlow<TaskStats> = allTasksUnfiltered.map { list ->
         val completed = list.count { it.isCompleted }
         TaskStats(
             totalTasks = list.size,
@@ -64,6 +112,10 @@ class TaskViewModel @Inject constructor(
 
     fun onSearchQueryChange(newQuery: String) {
         _searchQuery.value = newQuery
+    }
+
+    fun onCategorySearchQueryChange(newQuery: String) {
+        _categorySearchQuery.value = newQuery
     }
 
     fun addTask(task: TaskEntity) {
@@ -119,7 +171,11 @@ class TaskViewModel @Inject constructor(
     // Categories
     fun addCategory(name: String, color: Int? = null) {
         viewModelScope.launch {
-            repository.insertCategory(CategoryEntity(name = name, color = color))
+            // Case-insensitive check for existence
+            val current = repository.getAllCategories().first()
+            if (current.none { it.name.trim().equals(name.trim(), ignoreCase = true) }) {
+                repository.insertCategory(CategoryEntity(name = name.trim(), color = color))
+            }
         }
     }
 
